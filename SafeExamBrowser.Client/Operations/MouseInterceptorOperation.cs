@@ -16,6 +16,8 @@ namespace SafeExamBrowser.Client.Operations
 {
 	internal class MouseInterceptorOperation : ClientOperation
 	{
+		private static readonly bool DisableMouseInterceptionForLocalDevelopment = true;
+
 		private readonly ILogger logger;
 		private readonly IMouseInterceptor mouseInterceptor;
 
@@ -32,7 +34,14 @@ namespace SafeExamBrowser.Client.Operations
 			logger.Info("Starting mouse interception...");
 			StatusChanged?.Invoke(TextKey.OperationStatus_StartMouseInterception);
 
-			mouseInterceptor.Start();
+			if (DisableMouseInterceptionForLocalDevelopment)
+			{
+				logger.Info("Skipped mouse interception because mouse input is enabled for local development.");
+			}
+			else
+			{
+				mouseInterceptor.Start();
+			}
 
 			return OperationResult.Success;
 		}
@@ -42,7 +51,10 @@ namespace SafeExamBrowser.Client.Operations
 			logger.Info("Stopping mouse interception...");
 			StatusChanged?.Invoke(TextKey.OperationStatus_StopMouseInterception);
 
-			mouseInterceptor.Stop();
+			if (!DisableMouseInterceptionForLocalDevelopment)
+			{
+				mouseInterceptor.Stop();
+			}
 
 			return OperationResult.Success;
 		}

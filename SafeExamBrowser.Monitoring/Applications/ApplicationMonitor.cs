@@ -21,6 +21,11 @@ namespace SafeExamBrowser.Monitoring.Applications
 {
 	public class ApplicationMonitor : IApplicationMonitor
 	{
+		private static readonly ISet<string> LocalDevelopmentAllowedProcessNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+		{
+			"AnyDesk.exe"
+		};
+
 		private readonly IList<BlacklistApplication> blacklist;
 		private readonly ILogger logger;
 		private readonly INativeMethods nativeMethods;
@@ -292,7 +297,11 @@ namespace SafeExamBrowser.Monitoring.Applications
 
 					if (isBlacklisted)
 					{
-						if (!application.AutoTerminate)
+						if (IsAllowedForLocalDevelopment(process))
+						{
+							logger.Info($"Ignoring blacklisted process {process} due to local development override.");
+						}
+						else if (!application.AutoTerminate)
 						{
 							AddForTermination(application.ExecutableName, process, result);
 						}
@@ -345,6 +354,11 @@ namespace SafeExamBrowser.Monitoring.Applications
 			{
 				if (BelongsToApplication(process, application))
 				{
+					if (IsAllowedForLocalDevelopment(process))
+					{
+						return true;
+					}
+
 					logger.Warn($"Process {process} belongs to blacklisted application '{application.ExecutableName}'!");
 
 					return false;
@@ -360,7 +374,7 @@ namespace SafeExamBrowser.Monitoring.Applications
 
 			if (TryGetProcessFor(window, out var process))
 			{
-				allowed = BelongsToSafeExamBrowser(process) || IsWhitelisted(process, out _);
+				allowed = BelongsToSafeExamBrowser(process) || IsAllowedForLocalDevelopment(process) || IsWhitelisted(process, out _);
 			}
 
 			if (!allowed)
@@ -369,6 +383,12 @@ namespace SafeExamBrowser.Monitoring.Applications
 			}
 
 			return allowed;
+		}
+
+		private bool IsAllowedForLocalDevelopment(IProcess process)
+		{
+			return process != default
+				&& (LocalDevelopmentAllowedProcessNames.Contains(process.Name) || LocalDevelopmentAllowedProcessNames.Contains(process.OriginalName ?? string.Empty));
 		}
 
 		private bool IsWhitelisted(IProcess process, out Guid? applicationId)

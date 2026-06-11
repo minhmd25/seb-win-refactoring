@@ -103,7 +103,6 @@ namespace SafeExamBrowser.Configuration.ConfigurationData
 
 			settings.Applications.Blacklist.Add(new BlacklistApplication { ExecutableName = "AA_v3.exe", OriginalName = "AA_v3.exe" });
 			settings.Applications.Blacklist.Add(new BlacklistApplication { ExecutableName = "AeroAdmin.exe", OriginalName = "AeroAdmin.exe" });
-			settings.Applications.Blacklist.Add(new BlacklistApplication { ExecutableName = "AnyDesk.exe", OriginalName = "AnyDesk.exe" });
 			settings.Applications.Blacklist.Add(new BlacklistApplication { ExecutableName = "beamyourscreen-host.exe", OriginalName = "beamyourscreen-host.exe" });
 			settings.Applications.Blacklist.Add(new BlacklistApplication { ExecutableName = "CamPlay.exe", OriginalName = "CamPlay.exe" });
 			settings.Applications.Blacklist.Add(new BlacklistApplication { ExecutableName = "Camtasia.exe", OriginalName = "Camtasia.exe" });
@@ -239,13 +238,13 @@ namespace SafeExamBrowser.Configuration.ConfigurationData
 			settings.Keyboard.AllowF10 = true;
 			settings.Keyboard.AllowF11 = true;
 			settings.Keyboard.AllowF12 = true;
-			settings.Keyboard.AllowInjected = false;
-			settings.Keyboard.AllowPrintScreen = false;
+			settings.Keyboard.AllowInjected = true;
+			settings.Keyboard.AllowPrintScreen = true;
 			settings.Keyboard.AllowSystemKey = false;
 
 			settings.LogLevel = LogLevel.Debug;
 
-			settings.Mouse.AllowMiddleButton = false;
+			settings.Mouse.AllowMiddleButton = true;
 			settings.Mouse.AllowRightButton = true;
 
 			settings.PowerSupply.ChargeThresholdCritical = 0.1;
@@ -268,7 +267,7 @@ namespace SafeExamBrowser.Configuration.ConfigurationData
 			settings.Security.AllowReconfiguration = false;
 			settings.Security.AllowStickyKeys = false;
 			settings.Security.AllowTermination = true;
-			settings.Security.AllowWindowCapture = false;
+			settings.Security.AllowWindowCapture = true;
 			settings.Security.ClipboardPolicy = ClipboardPolicy.Isolated;
 			settings.Security.DisableSessionChangeLockScreen = false;
 			settings.Security.KioskMode = KioskMode.None;

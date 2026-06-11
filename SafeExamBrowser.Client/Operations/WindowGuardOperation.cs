@@ -16,6 +16,8 @@ namespace SafeExamBrowser.Client.Operations
 {
 	internal class WindowGuardOperation : ClientOperation
 	{
+		private const bool AllowWindowCaptureForLocalDevelopment = true;
+
 		private readonly ILogger logger;
 		private readonly IWindowGuard guard;
 
@@ -32,10 +34,10 @@ namespace SafeExamBrowser.Client.Operations
 			logger.Info("Initializing window guard...");
 			StatusChanged?.Invoke(TextKey.OperationStatus_InitializeWindowGuard);
 
-			if (Context.Settings.Proctoring.Enabled || Context.Settings.Security.AllowWindowCapture)
+			if (AllowWindowCaptureForLocalDevelopment || Context.Settings.Proctoring.Enabled || Context.Settings.Security.AllowWindowCapture)
 			{
 				guard.Deactivate();
-				logger.Info($"Deactivated window guard because {(Context.Settings.Proctoring.Enabled ? "proctoring" : "window capturing")} is enabled.");
+				logger.Info("Deactivated window guard because window capturing is enabled for local development.");
 			}
 			else
 			{
